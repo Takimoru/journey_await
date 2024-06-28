@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:aplikasiwisata/pages/destination_detail.dart'; // Import your destination detail page
 
 class HomePage extends StatelessWidget {
-  // Global keys for each category section
   final GlobalKey mountainKey = GlobalKey();
   final GlobalKey beachKey = GlobalKey();
   final GlobalKey waterfallKey = GlobalKey();
@@ -17,7 +15,7 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
               radius: 20.0,
-              backgroundImage: AssetImage('assets/aduhai.jpg'), // Use your local asset
+              backgroundImage: AssetImage('assets/aduhai.jpg'),
             ),
           ),
         ],
@@ -68,7 +66,6 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Greeting text
               Text(
                 'Hi user,\nYOUR NEXT JOURNEY AWAITS!',
                 style: TextStyle(
@@ -77,7 +74,6 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              // Main Image with corner radius
               Container(
                 margin: EdgeInsets.symmetric(vertical: 16.0),
                 decoration: BoxDecoration(
@@ -96,7 +92,7 @@ class HomePage extends StatelessWidget {
                   child: Stack(
                     children: [
                       Image.asset(
-                        'assets/jepang.jpg', // Use local asset image
+                        'assets/jepang.jpg',
                         height: 200,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -117,7 +113,7 @@ class HomePage extends StatelessWidget {
                         top: 30,
                         right: 16,
                         child: Text(
-                          ' Tokyo, Japan',
+                          'Tokyo, Japan',
                           style: TextStyle(
                             color: Colors.white70,
                             fontSize: 15,
@@ -129,7 +125,6 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              // Horizontal Scroll Buttons
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -150,23 +145,40 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16),
-              // Horizontal scrolling section for destinations
               _buildDestinationSection(
                 'Popular',
                 [
                   _buildDestinationCard(
                     context,
-                    'assets/semeru.jpg', // Use local asset image
+                    'assets/semeru.jpg',
                     'Mount Semeru, Malang, Indonesia',
                     'A magnificent mountain with stunning views and challenging trails.',
-                    4, // Star rating out of 5
+                    4,
+                    '/destinationDetail',
                   ),
                   _buildDestinationCard(
                     context,
-                    'assets/bali_beach.jpg', // Use local asset image
+                    'assets/bali_beach.jpg',
                     'Kuta Beach, Bali, Indonesia',
                     'A beautiful beach with golden sands and clear waters.',
-                    5, // Star rating out of 5
+                    5,
+                    '/destinationDetail2',
+                  ),
+                  _buildDestinationCard(
+                    context,
+                    'assets/waterfall_xyz.jpg',
+                    'Waterfall XYZ, Location ABC',
+                    'A breathtaking waterfall with serene surroundings and vibrant wildlife.',
+                    4,
+                    '/destinationDetail3', // Link to the third detail page
+                  ),
+                  _buildDestinationCard(
+                    context,
+                    'assets/beach_abc.jpg',
+                    'Beach ABC, Location XYZ',
+                    'An idyllic beach with crystal clear waters and pristine sands.',
+                    5,
+                    '/destinationDetail4', // Link to the fourth detail page
                   ),
                 ],
               ),
@@ -176,10 +188,11 @@ class HomePage extends StatelessWidget {
                 [
                   _buildDestinationCard(
                     context,
-                    'assets/semeru.jpg', // Use local asset image
+                    'assets/semeru.jpg',
                     'Mount Semeru, Malang, Indonesia',
                     'A magnificent mountain with stunning views and challenging trails.',
-                    4, // Star rating out of 5
+                    4,
+                    '/destinationDetail',
                   ),
                   // Add more Mountain destinations here
                 ],
@@ -190,10 +203,11 @@ class HomePage extends StatelessWidget {
                 [
                   _buildDestinationCard(
                     context,
-                    'assets/bali_beach.jpg', // Use local asset image
+                    'assets/bali_beach.jpg',
                     'Kuta Beach, Bali, Indonesia',
                     'A beautiful beach with golden sands and clear waters.',
-                    5, // Star rating out of 5
+                    5,
+                    '/destinationDetail2',
                   ),
                   // Add more Beach destinations here
                 ],
@@ -202,10 +216,18 @@ class HomePage extends StatelessWidget {
               _buildDestinationSection(
                 'Waterfall',
                 [
-                  // Add Waterfall destinations here
+                  _buildDestinationCard(
+                    context,
+                    'assets/waterfall_xyz.jpg',
+                    'Waterfall XYZ, Location ABC',
+                    'A breathtaking waterfall with serene surroundings and vibrant wildlife.',
+                    4,
+                    '/destinationDetail3',
+                  ),
+                  // Add more Waterfall destinations here
                 ],
               ),
-              SizedBox(height: 100), // Additional space at the bottom for demonstration
+              SizedBox(height: 100),
             ],
           ),
         ),
@@ -213,7 +235,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // Helper method to build category buttons with corner radius
   Widget _buildCategoryButton(String label, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -229,7 +250,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // Helper method to build destination sections
   Widget _buildDestinationSection(String category, List<Widget> destinations) {
     return Column(
       key: category == 'Popular'
@@ -263,7 +283,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // Method to scroll to a specific category
   void _scrollToCategory(String category) {
     switch (category) {
       case 'Popular':
@@ -299,14 +318,12 @@ class HomePage extends StatelessWidget {
     }
   }
 
-  // Helper method to build destination cards with corner radius and shadow
-  Widget _buildDestinationCard(BuildContext context, String imagePath, String title, String description, int rating) {
+  Widget _buildDestinationCard(BuildContext context, String imagePath, String title, String description, int rating, String route) {
     return GestureDetector(
       onTap: () {
-        // Navigate to the destination detail page
         Navigator.pushNamed(
           context,
-          '/destinationDetail',
+          route,
           arguments: {
             'imagePath': imagePath,
             'title': title,
@@ -325,7 +342,7 @@ class HomePage extends StatelessWidget {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3), // changes position of shadow
+              offset: Offset(0, 3),
             ),
           ],
         ),
