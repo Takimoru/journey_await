@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:aplikasiwisata/pages/destination_detail.dart'; // Import your destination detail page
 
 class HomePage extends StatelessWidget {
+  // Global keys for each category section
+  final GlobalKey mountainKey = GlobalKey();
+  final GlobalKey beachKey = GlobalKey();
+  final GlobalKey waterfallKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,7 +17,7 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
               radius: 20.0,
-              backgroundImage: AssetImage('assets/avatar.png'), // Use your local asset
+              backgroundImage: AssetImage('assets/aduhai.jpg'), // Use your local asset
             ),
           ),
         ],
@@ -128,102 +134,78 @@ class HomePage extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildCategoryButton('Popular'),
-                    _buildCategoryButton('Beach'),
-                    _buildCategoryButton('Mountain'),
-                    _buildCategoryButton('Waterfall'),
+                    _buildCategoryButton('Popular', () {
+                      _scrollToCategory('Popular');
+                    }),
+                    _buildCategoryButton('Beach', () {
+                      _scrollToCategory('Beach');
+                    }),
+                    _buildCategoryButton('Mountain', () {
+                      _scrollToCategory('Mountain');
+                    }),
+                    _buildCategoryButton('Waterfall', () {
+                      _scrollToCategory('Waterfall');
+                    }),
                   ],
                 ),
               ),
               SizedBox(height: 16),
               // Horizontal scrolling section for destinations
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _buildDestinationCard(
-                      'assets/semeru.jpg', // Use local asset image
-                      'Mount Semeru, Malang, Indonesia',
-                      'A magnificent mountain with stunning views and challenging trails.',
-                      4, // Star rating out of 5
-                    ),
-                    _buildDestinationCard(
-                      'assets/bali_beach.jpg', // Use local asset image
-                      'Kuta Beach, Bali, Indonesia',
-                      'A beautiful beach with golden sands and clear waters.',
-                      5, // Star rating out of 5
-                    ),
-                  ],
-                ),
+              _buildDestinationSection(
+                'Popular',
+                [
+                  _buildDestinationCard(
+                    context,
+                    'assets/semeru.jpg', // Use local asset image
+                    'Mount Semeru, Malang, Indonesia',
+                    'A magnificent mountain with stunning views and challenging trails.',
+                    4, // Star rating out of 5
+                  ),
+                  _buildDestinationCard(
+                    context,
+                    'assets/bali_beach.jpg', // Use local asset image
+                    'Kuta Beach, Bali, Indonesia',
+                    'A beautiful beach with golden sands and clear waters.',
+                    5, // Star rating out of 5
+                  ),
+                ],
               ),
               SizedBox(height: 16),
-              // Detailed Destination Section
-              GestureDetector(
-                onTap: () {
-                  // Navigate to the destination detail page
-                  Navigator.pushNamed(context, '/destinationDetail');
-                },
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 16.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
+              _buildDestinationSection(
+                'Mountain',
+                [
+                  _buildDestinationCard(
+                    context,
+                    'assets/semeru.jpg', // Use local asset image
+                    'Mount Semeru, Malang, Indonesia',
+                    'A magnificent mountain with stunning views and challenging trails.',
+                    4, // Star rating out of 5
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          'assets/semeru.jpg', // Use local asset image
-                          height: 200,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Mount Semeru, Malang, Indonesia',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'A magnificent mountain with stunning views and challenging trails. Perfect for adventure seekers.',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Row(
-                                children: List.generate(5, (index) {
-                                  return Icon(
-                                    Icons.star,
-                                    color: index < 4 ? Colors.orange : Colors.grey,
-                                  );
-                                }),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                  // Add more Mountain destinations here
+                ],
               ),
+              SizedBox(height: 16),
+              _buildDestinationSection(
+                'Beach',
+                [
+                  _buildDestinationCard(
+                    context,
+                    'assets/bali_beach.jpg', // Use local asset image
+                    'Kuta Beach, Bali, Indonesia',
+                    'A beautiful beach with golden sands and clear waters.',
+                    5, // Star rating out of 5
+                  ),
+                  // Add more Beach destinations here
+                ],
+              ),
+              SizedBox(height: 16),
+              _buildDestinationSection(
+                'Waterfall',
+                [
+                  // Add Waterfall destinations here
+                ],
+              ),
+              SizedBox(height: 100), // Additional space at the bottom for demonstration
             ],
           ),
         ),
@@ -232,7 +214,7 @@ class HomePage extends StatelessWidget {
   }
 
   // Helper method to build category buttons with corner radius
-  Widget _buildCategoryButton(String label) {
+  Widget _buildCategoryButton(String label, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ElevatedButton(
@@ -241,39 +223,126 @@ class HomePage extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        onPressed: () {},
+        onPressed: onTap,
         child: Text(label),
       ),
     );
   }
 
-  // Helper method to build destination cards with corner radius and shadow
-  Widget _buildDestinationCard(String imagePath, String title, String description, int rating) {
-    return Container(
-      margin: EdgeInsets.all(8.0),
-      width: 250,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3), // changes position of shadow
+  // Helper method to build destination sections
+  Widget _buildDestinationSection(String category, List<Widget> destinations) {
+    return Column(
+      key: category == 'Popular'
+          ? GlobalKey()
+          : category == 'Mountain'
+          ? mountainKey
+          : category == 'Beach'
+          ? beachKey
+          : category == 'Waterfall'
+          ? waterfallKey
+          : null,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            category,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: destinations,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Method to scroll to a specific category
+  void _scrollToCategory(String category) {
+    switch (category) {
+      case 'Popular':
+        Scrollable.ensureVisible(
+          GlobalKey() as BuildContext,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        break;
+      case 'Mountain':
+        Scrollable.ensureVisible(
+          mountainKey.currentContext!,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        break;
+      case 'Beach':
+        Scrollable.ensureVisible(
+          beachKey.currentContext!,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        break;
+      case 'Waterfall':
+        Scrollable.ensureVisible(
+          waterfallKey.currentContext!,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  // Helper method to build destination cards with corner radius and shadow
+  Widget _buildDestinationCard(BuildContext context, String imagePath, String title, String description, int rating) {
+    return GestureDetector(
+      onTap: () {
+        // Navigate to the destination detail page
+        Navigator.pushNamed(
+          context,
+          '/destinationDetail',
+          arguments: {
+            'imagePath': imagePath,
+            'title': title,
+            'description': description,
+          },
+        );
+      },
+      child: Container(
+        width: 250,
+        margin: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(
-              imagePath,
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+              child: Image.asset(
+                imagePath,
+                height: 120,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
