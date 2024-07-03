@@ -51,8 +51,8 @@ class HomePage extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
+              leading: Icon(Icons.logout_rounded),
+              title: Text('Logout'),
               onTap: () {
                 Navigator.pop(context);
               },

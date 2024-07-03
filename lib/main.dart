@@ -1,9 +1,11 @@
+import 'package:aplikasiwisata/login%20page/loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:aplikasiwisata/pages/home_page.dart';
 import 'package:aplikasiwisata/pages/destination_detail.dart';
 import 'package:aplikasiwisata/pages/destination_detail2.dart';
-import 'package:aplikasiwisata/pages/destination_detail3.dart'; // Import the third detail page
-import 'package:aplikasiwisata/pages/destination_detail4.dart'; // Import the fourth detail page
+import 'package:aplikasiwisata/pages/destination_detail3.dart';
+import 'package:aplikasiwisata/pages/destination_detail4.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,6 +14,11 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  Future<bool> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLoggedIn') ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,12 +26,33 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: FutureBuilder<bool>(
+        future: _checkLoginStatus(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show a loading spinner while checking login status
+            return Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          } else if (snapshot.hasError) {
+            // Handle any errors in retrieving the login status
+            return Scaffold(
+              body: Center(child: Text('Error checking login status')),
+            );
+          } else {
+            // If logged in, show HomePage, otherwise show LoginPage
+            bool isLoggedIn = snapshot.data ?? false;
+            return isLoggedIn ? HomePage() : LoginPage();
+          }
+        },
+      ),
       routes: {
+        '/home': (context) => HomePage(),
+        '/login': (context) => LoginPage(),
         '/destinationDetail': (context) => DestinationDetail(),
         '/destinationDetail2': (context) => DestinationDetail2(),
-        '/destinationDetail3': (context) => DestinationDetail3(), // Add route for the third detail page
-        '/destinationDetail4': (context) => DestinationDetail4(), // Add route for the fourth detail page
+        '/destinationDetail3': (context) => DestinationDetail3(),
+        '/destinationDetail4': (context) => DestinationDetail4(),
       },
     );
   }
