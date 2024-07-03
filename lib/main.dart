@@ -1,5 +1,5 @@
-import 'package:aplikasiwisata/login%20page/loginpage.dart';
 import 'package:flutter/material.dart';
+import 'package:aplikasiwisata/login%20page/loginpage.dart';
 import 'package:aplikasiwisata/pages/home_page.dart';
 import 'package:aplikasiwisata/pages/destination_detail.dart';
 import 'package:aplikasiwisata/pages/destination_detail2.dart';
@@ -31,9 +31,7 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Show a loading spinner while checking login status
-            return Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
+            return SplashScreen(); // Replace with your splash screen widget
           } else if (snapshot.hasError) {
             // Handle any errors in retrieving the login status
             return Scaffold(
@@ -54,6 +52,17 @@ class MyApp extends StatelessWidget {
         '/destinationDetail3': (context) => DestinationDetail3(),
         '/destinationDetail4': (context) => DestinationDetail4(),
       },
+    );
+  }
+}
+
+class SplashScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(), // Replace with your splash screen UI
+      ),
     );
   }
 }

@@ -1,9 +1,44 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final GlobalKey mountainKey = GlobalKey();
   final GlobalKey beachKey = GlobalKey();
   final GlobalKey waterfallKey = GlobalKey();
+  final PageController _pageController = PageController();
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 15),
+    );
+
+    _animation = Tween<double>(begin: 0, end: 1).animate(_animationController)
+      ..addListener(() {
+        _pageController.jumpTo(
+          _animation.value * _pageController.position.maxScrollExtent,
+        );
+      });
+
+    _animationController.repeat();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +205,7 @@ class HomePage extends StatelessWidget {
                     'Waterfall XYZ, Location ABC',
                     'A breathtaking waterfall with serene surroundings and vibrant wildlife.',
                     4,
-                    '/destinationDetail3', // Link to the third detail page
+                    '/destinationDetail3',
                   ),
                   _buildDestinationCard(
                     context,
@@ -178,7 +213,7 @@ class HomePage extends StatelessWidget {
                     'Beach ABC, Location XYZ',
                     'An idyllic beach with crystal clear waters and pristine sands.',
                     5,
-                    '/destinationDetail4', // Link to the fourth detail page
+                    '/destinationDetail4',
                   ),
                 ],
               ),
@@ -251,43 +286,71 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildDestinationSection(String category, List<Widget> destinations) {
-    return Column(
-      key: category == 'Popular'
-          ? GlobalKey()
-          : category == 'Mountain'
-          ? mountainKey
-          : category == 'Beach'
-          ? beachKey
-          : category == 'Waterfall'
-          ? waterfallKey
-          : null,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            category,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+    if (category == 'Popular') {
+      return Column(
+        key: GlobalKey(),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              category,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: destinations,
+          Container(
+            height: 250,
+            child: PageView.builder(
+              controller: _pageController,
+              itemBuilder: (context, index) {
+                final destination = destinations[index % destinations.length];
+                return destination;
+              },
+              itemCount: destinations.length,
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    } else {
+      return Column(
+        key: category == 'Mountain'
+            ? mountainKey
+            : category == 'Beach'
+            ? beachKey
+            : category == 'Waterfall'
+            ? waterfallKey
+            : null,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              category,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: destinations,
+            ),
+          ),
+        ],
+      );
+    }
   }
 
   void _scrollToCategory(String category) {
     switch (category) {
       case 'Popular':
         Scrollable.ensureVisible(
-          GlobalKey() as BuildContext,
+          GlobalKey().currentContext!,
           duration: Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );

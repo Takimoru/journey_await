@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                           );
                         },
                         child: Text(
-                          'Forget Password',
+                          'Register an account',
                           style: TextStyle(
                             color: Colors.blue,
                             decoration: TextDecoration.underline,
