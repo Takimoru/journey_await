@@ -40,11 +40,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  void _logout() {
+    // Perform logout logic here (e.g., clearing user session data)
+    Navigator.pushReplacementNamed(context, '/login'); // Navigate to login screen
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Journey Awaits'),
+        backgroundColor: Colors.blue[700],
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -61,7 +67,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.blue[700],
               ),
               child: Text(
                 'Menu',
@@ -72,25 +78,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.home),
+              leading: Icon(Icons.home, color: Colors.blue[700]),
               title: Text('Home'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: Icon(Icons.account_circle),
+              leading: Icon(Icons.account_circle, color: Colors.blue[700]),
               title: Text('Profile'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: Icon(Icons.logout_rounded),
+              leading: Icon(Icons.logout_rounded, color: Colors.blue[700]),
               title: Text('Logout'),
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: _logout,
             ),
           ],
         ),
@@ -106,6 +110,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
+                  color: Colors.blue[700],
                 ),
               ),
               SizedBox(height: 20),
@@ -138,21 +143,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         child: Text(
                           'Japan Castle',
                           style: TextStyle(
-                            color: Colors.white70,
+                            color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 10.0,
+                                color: Colors.black,
+                                offset: Offset(2.0, 2.0),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                       Positioned(
-                        top: 30,
+                        top: 40,
                         right: 16,
                         child: Text(
                           'Tokyo, Japan',
                           style: TextStyle(
-                            color: Colors.white70,
+                            color: Colors.white,
                             fontSize: 15,
-                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 10.0,
+                                color: Colors.black,
+                                offset: Offset(2.0, 2.0),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -193,9 +211,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   _buildDestinationCard(
                     context,
-                    'assets/bali_beach.jpg',
+                    'assets/kuta.jpg',
                     'Kuta Beach, Bali, Indonesia',
-                    'A beautiful beach with golden sands and clear waters.',
+                    'A beautiful beach with golden sands and clear waters.with aaaklkdaskldla',
                     5,
                     '/destinationDetail2',
                   ),
@@ -238,7 +256,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 [
                   _buildDestinationCard(
                     context,
-                    'assets/bali_beach.jpg',
+                    'assets/kuta.jpg',
                     'Kuta Beach, Bali, Indonesia',
                     'A beautiful beach with golden sands and clear waters.',
                     5,
@@ -275,82 +293,57 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.lightBlueAccent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
         onPressed: onTap,
-        child: Text(label),
+        child: Text(
+          label,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }
 
   Widget _buildDestinationSection(String category, List<Widget> destinations) {
-    if (category == 'Popular') {
-      return Column(
-        key: GlobalKey(),
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              category,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+    return Column(
+      key: category == 'Mountain'
+          ? mountainKey
+          : category == 'Beach'
+          ? beachKey
+          : category == 'Waterfall'
+          ? waterfallKey
+          : null,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            category,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue[700],
             ),
           ),
-          Container(
-            height: 250,
-            child: PageView.builder(
-              controller: _pageController,
-              itemBuilder: (context, index) {
-                final destination = destinations[index % destinations.length];
-                return destination;
-              },
-              itemCount: destinations.length,
-            ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: destinations,
           ),
-        ],
-      );
-    } else {
-      return Column(
-        key: category == 'Mountain'
-            ? mountainKey
-            : category == 'Beach'
-            ? beachKey
-            : category == 'Waterfall'
-            ? waterfallKey
-            : null,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              category,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: destinations,
-            ),
-          ),
-        ],
-      );
-    }
+        ),
+      ],
+    );
   }
 
   void _scrollToCategory(String category) {
     switch (category) {
       case 'Popular':
         Scrollable.ensureVisible(
-          GlobalKey().currentContext!,
+          GlobalKey() as BuildContext,
           duration: Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
@@ -434,6 +427,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: Colors.blue[700],
                     ),
                   ),
                   SizedBox(height: 4),
