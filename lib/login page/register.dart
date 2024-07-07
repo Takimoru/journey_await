@@ -1,6 +1,8 @@
+import 'dart:convert';
+import 'package:aplikasiwisata/login%20page/loginpage.dart';
 import 'package:flutter/material.dart';
-import 'package:aplikasiwisata/login page/loginpage.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Import shared preferences for saving user data
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;  // Ensure this is added after adding the package in pubspec.yaml
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -26,19 +28,52 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _register() async {
     if (_formKey.currentState!.validate()) {
-      // Simulate saving the data, e.g., saving to shared preferences or a database.
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true);
-      await prefs.setInt('userId', int.parse(_idController.text));
-      await prefs.setString('username', _nameController.text);
-      await prefs.setString('password', _passwordController.text); // Save password for demo purposes only. In real apps, store hashed passwords securely.
-      await prefs.setBool('isAdmin', _isAdmin);
+      final url = Uri.parse('http://localhost:8080/register');
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'id': int.parse(_idController.text),
+          'name': _nameController.text,
+          'password': _passwordController.text,
+          'is_admin': _isAdmin,
+        }),
+      );
 
-      // Navigate to HomePage or AdminPage based on the user role
-      if (_isAdmin) {
-        Navigator.pushReplacementNamed(context, '/adminHomePage'); // Adjust route as necessary
+      if (response.statusCode == 201) {
+        // Successfully registered
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+        await prefs.setInt('userId', int.parse(_idController.text));
+        await prefs.setString('username', _nameController.text);
+        await prefs.setString('password', _passwordController.text); // Not recommended for production
+        await prefs.setBool('isAdmin', _isAdmin);
+
+        // Navigate based on the role
+        if (_isAdmin) {
+          Navigator.pushReplacementNamed(context, '/adminHomePage');
+        } else {
+          Navigator.pushReplacementNamed(context, '/home');
+        }
       } else {
-        Navigator.pushReplacementNamed(context, '/home');
+        // Handle registration error
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Registration Failed'),
+              content: Text('Please try again.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
       }
     }
   }
@@ -70,8 +105,8 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 children: [
                   Image.asset(
-                    'assets/images/register.jpg', // Replace with the path to your image
-                    height: 200.0, // Set the desired height for the image
+                    'assets/pic2.jpg',
+                    height: 200.0,
                   ),
                   const Padding(
                     padding: EdgeInsets.all(8.0),
@@ -156,7 +191,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ElevatedButton(
                       onPressed: _register,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue, // Set the background color to blue
+                        backgroundColor: Colors.blue,
                       ),
                       child: const Text('Register', style: TextStyle(color: Colors.white)),
                     ),
@@ -166,7 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => LoginPage()),
-                        ); // Navigate to the login page
+                        );
                       },
                       child: const Text(
                         'Back to Login',
@@ -174,16 +209,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                   ],
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: Image.asset(
-                  'assets/images/Mulia_logo.png', // Replace with the path to your image
-                  height: 80.0, // Set the desired height for the image
                 ),
               ),
             ),

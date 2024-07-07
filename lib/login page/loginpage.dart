@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
           Padding(
             padding: const EdgeInsets.only(top: 50.0),
             child: Image.asset(
-              'assets/images/orang.jpg', // Replace with the path to your image
+              'assets/pic1.png', // Replace with the path to your image
               height: 150.0, // Set the desired height for the image
             ),
           ),
@@ -133,16 +133,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: Image.asset(
-                'assets/images/Mulia_logo.png', // Replace with the path to your image
-                height: 80.0, // Set the desired height for the image
-              ),
-            ),
-          )
         ],
       ),
     );

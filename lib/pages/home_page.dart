@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -20,7 +22,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 15),
+      duration: const Duration(seconds: 15),
     );
 
     _animation = Tween<double>(begin: 0, end: 1).animate(_animationController)
@@ -49,11 +51,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Journey Awaits'),
+        title: const Text('Journey Awaits'),
         backgroundColor: Colors.blue[700],
-        actions: [
+        actions: const [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
             child: CircleAvatar(
               radius: 20.0,
               backgroundImage: AssetImage('assets/aduhai.jpg'),
@@ -69,7 +71,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                 color: Colors.blue[700],
               ),
-              child: Text(
+              child: const Text(
                 'Menu',
                 style: TextStyle(
                   color: Colors.white,
@@ -79,21 +81,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             ListTile(
               leading: Icon(Icons.home, color: Colors.blue[700],),
-              title: Text('Home'),
+              title: const Text('Home'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
               leading: Icon(Icons.account_circle, color: Colors.blue[700]),
-              title: Text('Profile'),
+              title: const Text('Profile'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
               leading: Icon(Icons.logout_rounded, color: Colors.blue[700]),
-              title: Text('Logout'),
+              title: const Text('Logout'),
               onTap: _logout,
             ),
           ],
@@ -105,16 +107,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Hi user,\nYOUR NEXT JOURNEY AWAITS!',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 16.0),
+                margin: const EdgeInsets.symmetric(vertical: 16.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
@@ -122,7 +124,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 2,
                       blurRadius: 5,
-                      offset: Offset(0, 3),
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
@@ -136,7 +138,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
-                      Positioned(
+                      const Positioned(
                         top: 16,
                         right: 16,
                         child: Text(
@@ -155,7 +157,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      Positioned(
+                      const Positioned(
                         top: 36,
                         right: 16,
                         child: Text(
@@ -197,7 +199,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildDestinationSection(
                 'Popular',
                 [
@@ -211,7 +213,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   _buildDestinationCard(
                     context,
-                    'assets/bali_beach.jpg',
+                    'assets/kuta.jpg',
                     'Kuta Beach, Bali, Indonesia',
                     'A beautiful beach with golden sands and clear waters.',
                     5,
@@ -219,23 +221,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   _buildDestinationCard(
                     context,
-                    'assets/waterfall_xyz.jpg',
+                    'assets/madakaripura.jpg',
                     'Waterfall XYZ, Location ABC',
                     'A breathtaking waterfall with serene surroundings and vibrant wildlife.',
                     4,
                     '/destinationDetail3',
                   ),
-                  _buildDestinationCard(
-                    context,
-                    'assets/beach_abc.jpg',
-                    'Beach ABC, Location XYZ',
-                    'An idyllic beach with crystal clear waters and pristine sands.',
-                    5,
-                    '/destinationDetail4',
-                  ),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildDestinationSection(
                 'Mountain',
                 [
@@ -250,13 +244,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   // Add more Mountain destinations here
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildDestinationSection(
                 'Beach',
                 [
                   _buildDestinationCard(
                     context,
-                    'assets/bali_beach.jpg',
+                    'assets/kuta.jpg',
                     'Kuta Beach, Bali, Indonesia',
                     'A beautiful beach with golden sands and clear waters.',
                     5,
@@ -265,13 +259,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   // Add more Beach destinations here
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildDestinationSection(
                 'Waterfall',
                 [
                   _buildDestinationCard(
                     context,
-                    'assets/waterfall_xyz.jpg',
+                    'assets/madakaripura.jpg',
                     'Waterfall XYZ, Location ABC',
                     'A breathtaking waterfall with serene surroundings and vibrant wildlife.',
                     4,
@@ -280,7 +274,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   // Add more Waterfall destinations here
                 ],
               ),
-              SizedBox(height: 100),
+              const SizedBox(height: 100),
             ],
           ),
         ),
@@ -301,7 +295,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         onPressed: onTap,
         child: Text(
             label,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
         ),
       ),
     );
@@ -317,14 +311,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
               category,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.black
               ),
             ),
           ),
-          Container(
+          SizedBox(
             height: 250,
             child: PageView.builder(
               controller: _pageController,
@@ -352,7 +346,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
               category,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -375,28 +369,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       case 'Popular':
         Scrollable.ensureVisible(
           GlobalKey().currentContext!,
-          duration: Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
         break;
       case 'Mountain':
         Scrollable.ensureVisible(
           mountainKey.currentContext!,
-          duration: Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
         break;
       case 'Beach':
         Scrollable.ensureVisible(
           beachKey.currentContext!,
-          duration: Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
         break;
       case 'Waterfall':
         Scrollable.ensureVisible(
           waterfallKey.currentContext!,
-          duration: Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
         );
         break;
@@ -427,7 +421,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       },
       child: Container(
         width: 250,
-        margin: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -436,7 +430,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -444,7 +438,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
               ),
@@ -462,12 +456,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     description,
                     style: TextStyle(
@@ -475,7 +469,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       color: Colors.grey[600],
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Row(
                     children: List.generate(5, (index) {
                       return Icon(
