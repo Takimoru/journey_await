@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:aplikasiwisata/login%20page/loginpage.dart';
+import 'package:aplikasiwisata/login page/loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -46,7 +46,11 @@ class _RegisterPageState extends State<RegisterPage> {
         await prefs.setString('username', _nameController.text);
         await prefs.setString('password', _passwordController.text); // Not recommended for production
 
-        Navigator.pushReplacementNamed(context, '/home');
+        // Navigate to login page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
       } else {
         // Handle registration error
         showDialog(

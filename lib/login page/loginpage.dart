@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aplikasiwisata/pages/home_page.dart';
-import 'package:aplikasiwisata/login page/register.dart';
+import 'package:aplikasiwisata/login%20page/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -25,12 +25,37 @@ class _LoginPageState extends State<LoginPage> {
   void _login() async {
     if (_formKey.currentState!.validate()) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true);
+      final storedUsername = prefs.getString('username');
+      final storedPassword = prefs.getString('password');
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      if (_usernameController.text == storedUsername &&
+          _passwordController.text == storedPassword) {
+        // Login successful
+        await prefs.setBool('isLoggedIn', true);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else {
+        // Login failed
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Login Failed'),
+              content: Text('Invalid username or password. Please try again.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
 
@@ -77,13 +102,10 @@ class _LoginPageState extends State<LoginPage> {
                           labelText: 'Username',
                           border: OutlineInputBorder(),
                         ),
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.text,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Mohon mengisi Username';
-                          }
-                          if (int.tryParse(value) == null) {
-                            return 'Mohon mengisi username dengan NIM yang valid';
+                            return 'Please enter your username';
                           }
                           return null;
                         },
@@ -98,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                         obscureText: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Mohon memasukkan password yang sesuai';
+                            return 'Please enter your password';
                           }
                           return null;
                         },
