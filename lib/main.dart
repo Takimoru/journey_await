@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aplikasiwisata/login%20page/loginpage.dart';
+import 'package:aplikasiwisata/login page/loginpage.dart';
 import 'package:aplikasiwisata/pages/home_page.dart';
 import 'package:aplikasiwisata/pages/destination_detail.dart';
 import 'package:aplikasiwisata/pages/destination_detail2.dart';
