@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:aplikasiwisata/login%20page/loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;  // Ensure this is added after adding the package in pubspec.yaml
+import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,7 +16,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isAdmin = false;
 
   @override
   void dispose() {
@@ -28,7 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _register() async {
     if (_formKey.currentState!.validate()) {
-      final url = Uri.parse('http://localhost:8080/register');
+      final url = Uri.parse('http://192.168.1.2:8080/register'); // Update with your local IP
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -36,7 +35,6 @@ class _RegisterPageState extends State<RegisterPage> {
           'id': int.parse(_idController.text),
           'name': _nameController.text,
           'password': _passwordController.text,
-          'is_admin': _isAdmin,
         }),
       );
 
@@ -47,14 +45,8 @@ class _RegisterPageState extends State<RegisterPage> {
         await prefs.setInt('userId', int.parse(_idController.text));
         await prefs.setString('username', _nameController.text);
         await prefs.setString('password', _passwordController.text); // Not recommended for production
-        await prefs.setBool('isAdmin', _isAdmin);
 
-        // Navigate based on the role
-        if (_isAdmin) {
-          Navigator.pushReplacementNamed(context, '/adminHomePage');
-        } else {
-          Navigator.pushReplacementNamed(context, '/home');
-        }
+        Navigator.pushReplacementNamed(context, '/home');
       } else {
         // Handle registration error
         showDialog(
@@ -175,16 +167,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           return 'Password must be at least 6 characters long';
                         }
                         return null;
-                      },
-                    ),
-                    const SizedBox(height: 16.0),
-                    CheckboxListTile(
-                      title: const Text('Register as Admin'),
-                      value: _isAdmin,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _isAdmin = value ?? false;
-                        });
                       },
                     ),
                     const SizedBox(height: 30.0),
