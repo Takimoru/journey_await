@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:aplikasiwisata/pages/home_page.dart';
-import 'package:aplikasiwisata/login%20page/register.dart';
+import 'package:aplikasiwisata/login page/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,38 +14,78 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _idController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
   void _login() async {
     if (_formKey.currentState!.validate()) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final storedUsername = prefs.getString('username');
-      final storedPassword = prefs.getString('password');
+      final url = Uri.parse('http://192.168.1.2:8080/login'); // Update with your local IP
+      final body = jsonEncode({
+        'id': int.parse(_idController.text),
+        'password': _passwordController.text,
+      });
+      print('Sending login request: $body');
 
-      if (_usernameController.text == storedUsername &&
-          _passwordController.text == storedPassword) {
-        // Login successful
-        await prefs.setBool('isLoggedIn', true);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+      try {
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: body,
         );
-      } else {
-        // Login failed
+
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+
+        if (response.statusCode == 200) {
+          final responseData = jsonDecode(response.body);
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
+          await prefs.setInt('userId', responseData['user']['id']);
+          await prefs.setString('username', responseData['user']['name']);
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        } else {
+          final responseData = jsonDecode(response.body);
+          print('Error: ${responseData['message']}');
+          if (responseData['error'] != null) {
+            print('Error details: ${responseData['error']}');
+          }
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Login Failed'),
+                content: Text(responseData['message']),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      } catch (error) {
+        print('Request failed with error: $error');
         showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               title: Text('Login Failed'),
-              content: Text('Invalid username or password. Please try again.'),
+              content: Text('An error occurred. Please try again.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -97,15 +139,15 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       TextFormField(
-                        controller: _usernameController,
+                        controller: _idController,
                         decoration: InputDecoration(
-                          labelText: 'Username',
+                          labelText: 'ID',
                           border: OutlineInputBorder(),
                         ),
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your username';
+                            return 'Please enter your ID';
                           }
                           return null;
                         },
