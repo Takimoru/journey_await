@@ -222,8 +222,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   _buildDestinationCard(
                     context,
                     'assets/madakaripura.jpg',
-                    'Waterfall XYZ, Location ABC',
-                    'A breathtaking waterfall with serene surroundings and vibrant wildlife.',
+                    'Madakaripura Waterfall, Probolinggo Indonesia',
+                    'A breathtaking waterfall with serene surroundings.',
                     4,
                     '/destinationDetail3',
                   ),
@@ -266,7 +266,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   _buildDestinationCard(
                     context,
                     'assets/madakaripura.jpg',
-                    'Waterfall XYZ, Location ABC',
+                    'Madakaripura Waterfall, Probolinggo Indonesia',
                     'A breathtaking waterfall with serene surroundings and vibrant wildlife.',
                     4,
                     '/destinationDetail3',

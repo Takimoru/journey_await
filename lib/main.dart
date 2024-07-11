@@ -4,7 +4,6 @@ import 'package:aplikasiwisata/pages/home_page.dart';
 import 'package:aplikasiwisata/pages/destination_detail.dart';
 import 'package:aplikasiwisata/pages/destination_detail2.dart';
 import 'package:aplikasiwisata/pages/destination_detail3.dart';
-import 'package:aplikasiwisata/pages/destination_detail4.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -19,11 +18,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  Future<bool> _checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('isLoggedIn') ?? false;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -38,7 +32,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.detached || state == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.detached) {
       _logoutUser();
     }
   }
@@ -46,6 +40,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future<void> _logoutUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', false);
+    await prefs.remove('currentRoute');
+    print('User logged out');
+  }
+
+  Future<bool> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    return isLoggedIn;
+  }
+
+  Future<String> _getCurrentRoute() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String currentRoute = prefs.getString('currentRoute') ?? '/login';
+    return currentRoute;
+  }
+
+  Future<void> _storeCurrentRoute(String route) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('currentRoute', route);
   }
 
   @override
@@ -59,17 +72,57 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         future: _checkLoginStatus(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // Show a loading spinner while checking login status
-            return SplashScreen(); // Replace with your splash screen widget
+            return SplashScreen();
           } else if (snapshot.hasError) {
-            // Handle any errors in retrieving the login status
             return Scaffold(
               body: Center(child: Text('Error checking login status')),
             );
           } else {
-            // If logged in, show HomePage, otherwise show LoginPage
             bool isLoggedIn = snapshot.data ?? false;
-            return isLoggedIn ? HomePage() : LoginPage();
+            if (!isLoggedIn) {
+              return LoginPage();
+            } else {
+              return FutureBuilder<String>(
+                future: _getCurrentRoute(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return SplashScreen();
+                  } else if (snapshot.hasError) {
+                    return Scaffold(
+                      body: Center(child: Text('Error checking current route')),
+                    );
+                  } else {
+                    String currentRoute = snapshot.data ?? '/home';
+                    return Navigator(
+                      initialRoute: currentRoute,
+                      onGenerateRoute: (RouteSettings settings) {
+                        WidgetBuilder builder;
+                        switch (settings.name) {
+                          case '/login':
+                            builder = (BuildContext _) => LoginPage();
+                            break;
+                          case '/home':
+                            builder = (BuildContext _) => HomePage();
+                            break;
+                          case '/destinationDetail':
+                            builder = (BuildContext _) => DestinationDetail();
+                            break;
+                          case '/destinationDetail2':
+                            builder = (BuildContext _) => DestinationDetail2();
+                            break;
+                          case '/destinationDetail3':
+                            builder = (BuildContext _) => DestinationDetail3();
+                            break;
+                          default:
+                            builder = (BuildContext _) => HomePage();
+                        }
+                        return MaterialPageRoute(builder: builder, settings: settings);
+                      },
+                    );
+                  }
+                },
+              );
+            }
           }
         },
       ),
@@ -79,7 +132,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         '/destinationDetail': (context) => DestinationDetail(),
         '/destinationDetail2': (context) => DestinationDetail2(),
         '/destinationDetail3': (context) => DestinationDetail3(),
-        '/destinationDetail4': (context) => DestinationDetail4(),
       },
     );
   }
@@ -90,7 +142,7 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: CircularProgressIndicator(), // Replace with your splash screen UI
+        child: CircularProgressIndicator(),
       ),
     );
   }
