@@ -294,8 +294,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         onPressed: onTap,
         child: Text(
-            label,
-            style: const TextStyle(color: Colors.white),
+          label,
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );
@@ -312,9 +312,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Text(
               category,
               style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black
               ),
             ),
           ),
